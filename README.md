@@ -3,7 +3,7 @@
 **Ariel Alas**
 
 #### Executive summary
-We built and compared six classification pipelines to predict whether a pregnancy will result in twins (or more) using publicly available CDC natality records. Our top model—SMOTE + XGBoost (tuned via GridSearchCV)—achieved 0.96 accuracy, 1.00 precision for multiples, and a weighted F1 of 0.95. This high‐confidence pipeline can help clinical teams allocate extra monitoring resources only when truly needed.
+Built and compared six classification pipelines to predict whether a pregnancy will result in twins (or more) using publicly available CDC natality records. Our top model—SMOTE + XGBoost (tuned via GridSearchCV)—achieved 0.96 accuracy, 1.00 precision for multiples, and a weighted F1 of 0.95. This high‐confidence pipeline can help clinical teams allocate extra monitoring resources only when truly needed.
 
 
 #### Rationale
@@ -26,7 +26,7 @@ Can we predict whether a pregnancy will result in a multiple birth using demogra
    - One-hot encoded for a categorical variable
    - Created the binary target
 4.	Train-test split: Used train_test_split with stratification to preserve class balance.
-5. Feature Selection: Used `SequentialFeatureSelector` on Logistic Regression to compare top‐k predictors.  
+5. Feature Selection: Used `SequentialFeatureSelector` to compare top‐k predictors.  
 5.	SMOTE: Applied to training set only to oversample the minority class (multiple births).
 6.	Modeling: 
       - **Baseline LR** with all features.  
@@ -53,6 +53,11 @@ Can we predict whether a pregnancy will result in a multiple birth using demogra
 
 **Top features** (by gain): `months_since_last_birth`, `prior_live_births`, `weight_gain_category`, etc.  
 **Confusion matrix** for final model shows zero false positives and 6,675 true positives.
+
+```
+[[212171      0]
+ [  9447   6675]]
+```
 
 #### Next steps and recommendations
 - **Threshold Tuning:** adjust decision threshold to increase recall while maintaining acceptable precision.  
