@@ -3,6 +3,8 @@
 **Ariel Alas**
 
 #### Executive summary
+We built and compared six classification pipelines to predict whether a pregnancy will result in twins (or more) using publicly available CDC natality records. Our top model—SMOTE + XGBoost (tuned via GridSearchCV)—achieved 0.96 accuracy, 1.00 precision for multiples, and a weighted F1 of 0.95. This high‐confidence pipeline can help clinical teams allocate extra monitoring resources only when truly needed.
+
 
 #### Rationale
 This project explores the use of machine learning to predict whether a woman is likely to have a multiple birth (twins or more) based on publicly available CDC natality data. The goal is to provide early insights that could support prenatal planning and resource allocation in clinical settings. A baseline logistic regression model was implemented, and initial results show promising recall for identifying multiple births, with room for improving precision in future iterations.
@@ -11,7 +13,7 @@ This project explores the use of machine learning to predict whether a woman is 
 Can we predict whether a pregnancy will result in a multiple birth using demographic and prenatal factors reported in natality records?
 
 #### Data Sources
- - Data: CDC Natality Public Use Files 2023
+ - Data: CDC Natality Public Use Files 2024
  - Link: https://www.cdc.gov/nchs/data_access/vitalstatsonline.htm
 
 #### Methodology
@@ -22,22 +24,39 @@ Can we predict whether a pregnancy will result in a multiple birth using demogra
 3. Feature encoding:
    - Mapped binary categorical values (Y, N, U, X) to numeric (1/0)
    - One-hot encoded for a categorical variable
+   - Created the binary target
 4.	Train-test split: Used train_test_split with stratification to preserve class balance.
+5. Feature Selection: Used `SequentialFeatureSelector` on Logistic Regression to compare top‐k predictors.  
 5.	SMOTE: Applied to training set only to oversample the minority class (multiple births).
-6.	Modeling: Trained a baseline Logistic Regression model with feature scaling (StandardScaler).
-7.	Evaluation: Used classification report and confusion matrix to assess performance.
+6.	Modeling: 
+      - **Baseline LR** with all features.  
+      - **LR + SequentialFeatureSelector**
+      - **LR + SFS + SMOTE** for class imbalance.  
+      - **RandomForest**, **XGBoost**, and **LightGBM** with FS + SMOTE.  
+      - **SMOTE + XGBoost + GridSearchCV** for hyperparameter tuning (n_estimators, max_depth, learning_rate) with 3-fold CV, optimizing F1.
+
+7.	Evaluation:
+      - Metrics: **Precision, Recall, F1** for the minority class (multiples), overall **Accuracy**, and confusion matrices.  
+      - Chose **F1** as primary metric to balance false positives & false negatives, with clinical cost-benefit in mind.
+
 
 #### Results
-The baseline logistic regression model produced the following metrics:
+| Model                                 | Acc  | Prec₁ | Rec₁ | F1₁ |  
+|---------------------------------------|:----:|:-----:|:----:|:---:|
+| Baseline Logistic Regression          | 0.94 | 0.98  | 0.14 | 0.24|
+| LR + Feature Selection                | 0.94 | 0.99  | 0.14 | 0.24|
+| LR + FS + SMOTE                       | 0.70 | 0.15  | 0.68 | 0.24|
+| RF + FS + SMOTE                       | 0.82 | 0.23  | 0.63 | 0.34|
+| XGB + FS + SMOTE                      | 0.82 | 0.23  | 0.63 | 0.34|
+| LGBM + FS + SMOTE                     | 0.82 | 0.23  | 0.63 | 0.34|
+| **SMOTE + XGB + GridSearchCV (final)**| **0.96** |**1.00**|**0.41**|**0.59**|
 
-![Metrics](images/metrics.png)
+**Top features** (by gain): `months_since_last_birth`, `prior_live_births`, `weight_gain_category`, etc.  
+**Confusion matrix** for final model shows zero false positives and 6,675 true positives.
 
- - The model is highly precise at identifying single births and has moderate recall for multiple births.
- - Recall of 59% for the minority class shows that SMOTE helped the model learn the signal for rare outcomes.
-
-#### Next steps
-- Train and compare tree-based models (Random Forest, XGBoost) to improve precision while maintaining recall.
-- Utilize hyperparameter tuning (GridSearch) to optimize model performance.
+#### Next steps and recommendations
+- **Threshold Tuning:** adjust decision threshold to increase recall while maintaining acceptable precision.  
+- **Grouping & combining features:** Group key numbers into a few buckets (e.g. turn “months since last birth” into categories like 0–12 months, 13–24 months, 25+ months) so the model sees clear ranges instead of every single value.
 
 #### Outline of project
 
