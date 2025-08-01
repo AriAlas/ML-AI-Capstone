@@ -63,9 +63,9 @@ Can we predict whether a pregnancy will result in a multiple birth using demogra
 - **Threshold Tuning:** adjust decision threshold to increase recall while maintaining acceptable precision.  
 - **Grouping & combining features:** Group key numbers into a few buckets (e.g. turn “months since last birth” into categories like 0–12 months, 13–24 months, 25+ months) so the model sees clear ranges instead of every single value.
 
-#### Outline of project
+#### Notebook
 
-- [Notebook](https://github.com/AriAlas/ML-AI-Capstone/capstone)
+- [https://github.com/AriAlas/ML-AI-Capstone/capstone](https://github.com/AriAlas/ML-AI-Capstone/blob/main/capstone.ipynb)
 
 
 ##### Contact and Further Information
