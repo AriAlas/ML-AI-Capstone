@@ -51,7 +51,7 @@ Can we predict whether a pregnancy will result in a multiple birth using demogra
 | LGBM + FS + SMOTE                     | 0.82 | 0.23  | 0.63 | 0.34|
 | **SMOTE + XGB + GridSearchCV (final)**| **0.96** |**1.00**|**0.41**|**0.59**|
 
-**Top features** (by gain): `months_since_last_birth`, `prior_live_births`, `weight_gain_category`, etc.  
+**Top features** (by gain): `months_since_last_birth`, `prior_live_births`, `weight_gain_category`.  
 **Confusion matrix** for final model shows zero false positives and 6,675 true positives.
 
 ```
